@@ -268,25 +268,23 @@ def play_sky():
     SCREEN_WIDTH = 1280
     SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    RUNNING = [pygame.image.load(os.path.join("Assets/sky/Dino", "DinoRun1.png")),
-            pygame.image.load(os.path.join("Assets/sky/Dino", "DinoRun2.png"))]
-    JUMPING = pygame.image.load(os.path.join("Assets/sky/Dino", "DinoJump.png"))
-    DUCKING = [pygame.image.load(os.path.join("Assets/sky/Dino", "DinoDuck1.png")),
-            pygame.image.load(os.path.join("Assets/sky/Dino", "DinoDuck2.png"))]
+    RUNNING = [pygame.image.load(os.path.join("Assets/sky", "DinoRun1.png")),
+            pygame.image.load(os.path.join("Assets/sky", "DinoRun2.png"))]
+    JUMPING = pygame.image.load(os.path.join("Assets/sky", "DinoJump.png"))
+    DUCKING = [pygame.image.load(os.path.join("Assets/sky", "DinoDuck1.png")),
+            pygame.image.load(os.path.join("Assets/sky", "DinoDuck2.png"))]
 
-    SMALL_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus1.png")),
-                    pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus2.png")),
-                    pygame.image.load(os.path.join("Assets/Cactus", "SmallCactus3.png"))]
-    LARGE_CACTUS = [pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus1.png")),
-                    pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus2.png")),
-                    pygame.image.load(os.path.join("Assets/Cactus", "LargeCactus3.png"))]
+    SMALL_CLOUD = [pygame.image.load(os.path.join("Assets/other", "Cloud.png")),
+                    pygame.image.load(os.path.join("Assets/other", "Cloud.png")),
+                    pygame.image.load(os.path.join("Assets/other", "Cloud.png"))]
+    LARGE_CLOUD = [pygame.image.load(os.path.join("Assets/other", "LargeCloud.png")),
+                    pygame.image.load(os.path.join("Assets/other", "LargeCloud.png")),
+                    pygame.image.load(os.path.join("Assets/other", "LargeCloud.png"))]
 
     BIRD = [pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")),
             pygame.image.load(os.path.join("Assets/Bird", "Bird2.png"))]
 
-    CLOUD = pygame.image.load(os.path.join("Assets/Other", "Cloud.png"))
-
-    BG = pygame.image.load(os.path.join("Assets/Other", "Track.png"))
+    BG = pygame.image.load(os.path.join("Assets/sky", "Track.png"))
 
 
     class Dinosaur:
@@ -362,23 +360,6 @@ def play_sky():
             SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
 
 
-    class Cloud:
-        def __init__(self):
-            self.x = SCREEN_WIDTH + random.randint(800, 1000)
-            self.y = random.randint(50, 100)
-            self.image = CLOUD
-            self.width = self.image.get_width()
-
-        def update(self):
-            self.x -= game_speed
-            if self.x < -self.width:
-                self.x = SCREEN_WIDTH + random.randint(2500, 3000)
-                self.y = random.randint(50, 100)
-
-        def draw(self, SCREEN):
-            SCREEN.blit(self.image, (self.x, self.y))
-
-
     class Obstacle:
         def __init__(self, image, type):
             self.image = image
@@ -395,14 +376,14 @@ def play_sky():
             SCREEN.blit(self.image[self.type], self.rect)
 
 
-    class SmallCactus(Obstacle):
+    class SmallCloud(Obstacle):
         def __init__(self, image):
             self.type = random.randint(0, 2)
             super().__init__(image, self.type)
             self.rect.y = 325
 
 
-    class LargeCactus(Obstacle):
+    class LargeCloud(Obstacle):
         def __init__(self, image):
             self.type = random.randint(0, 2)
             super().__init__(image, self.type)
@@ -428,7 +409,6 @@ def play_sky():
         run = True
         clock = pygame.time.Clock()
         player = Dinosaur()
-        cloud = Cloud()
         game_speed = 20
         x_pos_bg = 0
         y_pos_bg = 380
@@ -463,7 +443,7 @@ def play_sky():
                 if event.type == pygame.QUIT:
                     run = False
 
-            SCREEN.fill((255, 255, 255))
+            SCREEN.fill((163, 163, 163))
             userInput = pygame.key.get_pressed()
 
             player.draw(SCREEN)
@@ -471,9 +451,9 @@ def play_sky():
 
             if len(obstacles) == 0:
                 if random.randint(0, 2) == 0:
-                    obstacles.append(SmallCactus(SMALL_CACTUS))
+                    obstacles.append(SmallCloud(SMALL_CLOUD))
                 elif random.randint(0, 2) == 1:
-                    obstacles.append(LargeCactus(LARGE_CACTUS))
+                    obstacles.append(LargeCloud(LARGE_CLOUD))
                 elif random.randint(0, 2) == 2:
                     obstacles.append(Bird(BIRD))
 
@@ -486,9 +466,6 @@ def play_sky():
                     menu(death_count)
 
             background()
-
-            cloud.draw(SCREEN)
-            cloud.update()
 
             score()
 
@@ -545,7 +522,7 @@ def options():
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu()
                 if SKY_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
+                    play_sky()
                 if SEA_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     running = True
                     while running: 
@@ -580,7 +557,6 @@ def options():
                         pygame.display.update()
                 if LAND_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     play()
-                    main_menu()
 
         pygame.display.update()
 
@@ -620,8 +596,6 @@ def main_menu():
                     sys.exit()
 
         pygame.display.update()
-
-
 
 
 
